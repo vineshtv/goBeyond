@@ -23,12 +23,12 @@ func Test100BstInserts(t *testing.T) {
 func Test100RandomActions(t *testing.T) {
 	bst := &BinarySearchTree{root: nil}
 
-	for i := 0; i < 10000; i++ {
+	for i := 0; i < 300000; i++ {
 		rand_choice := rand.IntN(2)
 		if rand_choice == 0 {
 			bst.insert(rand.IntN(1000))
 		} else {
-			bst.delete(rand.IntN(1000))
+			bst.deletenew(rand.IntN(1000))
 		}
 	}
 	bst.inOrderTraverse()

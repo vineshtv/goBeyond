@@ -96,6 +96,71 @@ func (curr *Node) deleteNodeByValue(value int, parent *Node) {
 	}
 }
 
+func (curr *Node) deleteNodeByValueNew(value int) {
+	if curr.isLeaf() {
+		return
+	}
+
+	if value < curr.value {
+		if curr.leftChild != nil {
+			if value == curr.leftChild.value {
+				// delete the left child node.
+				tempRight := curr.leftChild.rightChild
+				curr.leftChild = curr.leftChild.leftChild
+				if tempRight != nil {
+					curr.insertNode(tempRight)
+				}
+				return
+			} else {
+				curr.leftChild.deleteNodeByValueNew(value)
+			}
+		}
+	} else {
+		if curr.rightChild != nil {
+			if value == curr.rightChild.value {
+				// delete the right child
+				tempRight := curr.rightChild.rightChild
+				curr.rightChild = curr.rightChild.leftChild
+				if tempRight != nil {
+					curr.insertNode(tempRight)
+				}
+				return
+			} else {
+				curr.rightChild.deleteNodeByValueNew(value)
+			}
+		}
+	}
+}
+
+func (bst *BinarySearchTree) deletenew(value int) {
+	if bst.root == nil {
+		return
+	}
+
+	if bst.root.value == value {
+		// if root is the only node
+		if bst.root.isLeaf() {
+			fmt.Println("Deleting root...")
+			bst.root = nil
+			return
+		} else {
+			leftChild := bst.root.leftChild
+			rightChild := bst.root.rightChild
+
+			if leftChild != nil {
+				bst.root = leftChild
+				bst.root.insertNode(rightChild)
+			} else {
+				bst.root = rightChild
+			}
+			return
+		}
+	}
+
+	// normal case
+	bst.root.deleteNodeByValueNew(value)
+}
+
 // delete: Delete a value from the BST if present.
 func (bst *BinarySearchTree) delete(value int) {
 	// If the BST is empty
