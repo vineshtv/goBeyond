@@ -200,6 +200,55 @@ func (bst *BinarySearchTree) delete(value int) {
 	}
 }
 
+func (curr *Node) deleteNodeFaster(value int) (delNode *Node) {
+	if curr == nil {
+		return nil
+	}
+
+	if value < curr.value {
+		curr.leftChild = curr.leftChild.deleteNodeFaster(value)
+	} else if value > curr.value {
+		curr.rightChild = curr.rightChild.deleteNodeFaster(value)
+	} else {
+		if curr.leftChild == nil {
+			return curr.rightChild
+		} else if curr.rightChild == nil {
+			return curr.leftChild
+		}
+
+		tempNode := curr.rightChild.getMinNode()
+		curr.value = tempNode.value
+		curr.rightChild.deleteNodeFaster(tempNode.value)
+	}
+
+	return curr
+}
+
+func (curr *Node) getMinNode() *Node {
+	minNode := curr
+	for minNode.leftChild != nil {
+		minNode = minNode.leftChild
+	}
+	return minNode
+}
+
+func (bst *BinarySearchTree) deleteFaster(value int) {
+	if bst.root == nil {
+		fmt.Println("Cannot delete from an empty BST!!")
+		return
+	}
+
+	// if the root is the only node and it is the one to be deleted.
+	if bst.root.value == value {
+		if bst.root.isLeaf() {
+			bst.root = nil
+			return
+		}
+	}
+
+	_ = bst.root.deleteNodeFaster(value)
+}
+
 // inOrder: Node reciver for inOrder traversal.
 func (curr *Node) inOrder() {
 	if curr == nil {
