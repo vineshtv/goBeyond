@@ -59,156 +59,15 @@ func (curr *Node) isLeaf() bool {
 	}
 }
 
-// deleteNodeByValue: Node receiver which recursively checks and deletes a node if matched.
-func (curr *Node) deleteNodeByValue(value int, parent *Node) {
-	if curr == nil {
-		fmt.Println("Value not present.")
-		return
-	}
-	// If curr node is to be deleted
-	if curr.value == value {
-		fmt.Println("Value found...deleting...")
-		leftChild := curr.leftChild
-		rightChild := curr.rightChild
-
-		// We need to check if the current node is a left or right child.
-		if curr.value < parent.value {
-			if leftChild != nil {
-				parent.leftChild = leftChild
-				parent.leftChild.insertNode(rightChild)
-			} else {
-				parent.leftChild = rightChild
-			}
-			return
-		} else {
-			if leftChild != nil {
-				parent.rightChild = leftChild
-				parent.rightChild.insertNode(rightChild)
-			} else {
-				parent.rightChild = rightChild
-			}
-			return
-		}
-	} else if value < curr.value {
-		curr.leftChild.deleteNodeByValue(value, curr)
-	} else {
-		curr.rightChild.deleteNodeByValue(value, curr)
-	}
-}
-
-func (curr *Node) deleteNodeByValueNew(value int) {
-	if curr.isLeaf() {
-		return
-	}
-
-	if value < curr.value {
-		if curr.leftChild != nil {
-			if value == curr.leftChild.value {
-				// delete the left child node.
-				tempRight := curr.leftChild.rightChild
-				curr.leftChild = curr.leftChild.leftChild
-				if tempRight != nil {
-					curr.insertNode(tempRight)
-				}
-				return
-			} else {
-				curr.leftChild.deleteNodeByValueNew(value)
-			}
-		}
-	} else {
-		if curr.rightChild != nil {
-			if value == curr.rightChild.value {
-				// delete the right child
-				tempRight := curr.rightChild.rightChild
-				curr.rightChild = curr.rightChild.leftChild
-				if tempRight != nil {
-					curr.insertNode(tempRight)
-				}
-				return
-			} else {
-				curr.rightChild.deleteNodeByValueNew(value)
-			}
-		}
-	}
-}
-
-func (bst *BinarySearchTree) deletenew(value int) {
-	if bst.root == nil {
-		return
-	}
-
-	if bst.root.value == value {
-		// if root is the only node
-		if bst.root.isLeaf() {
-			fmt.Println("Deleting root...")
-			bst.root = nil
-			return
-		} else {
-			leftChild := bst.root.leftChild
-			rightChild := bst.root.rightChild
-
-			if leftChild != nil {
-				bst.root = leftChild
-				bst.root.insertNode(rightChild)
-			} else {
-				bst.root = rightChild
-			}
-			return
-		}
-	}
-
-	// normal case
-	bst.root.deleteNodeByValueNew(value)
-}
-
-// delete: Delete a value from the BST if present.
-func (bst *BinarySearchTree) delete(value int) {
-	// If the BST is empty
-	if bst.root == nil {
-		fmt.Println("Cannot delete from an empty BST!!")
-		return
-	}
-
-	fmt.Println("Searching for value -", value)
-
-	// Edge case where the root is the node to be deleted.
-	if bst.root.value == value {
-		// if root is the only node
-		if bst.root.isLeaf() {
-			fmt.Println("Deleting root...")
-			bst.root = nil
-			return
-		} else {
-			leftChild := bst.root.leftChild
-			rightChild := bst.root.rightChild
-
-			if leftChild != nil {
-				bst.root = leftChild
-				bst.root.insertNode(rightChild)
-			} else {
-				bst.root = rightChild
-			}
-			return
-		}
-	}
-
-	// normal case.
-	if value < bst.root.value {
-		bst.root.leftChild.deleteNodeByValue(value, bst.root)
-	} else {
-		bst.root.rightChild.deleteNodeByValue(value, bst.root)
-	}
-}
-
-func (curr *Node) deleteNodeFaster(value int) (delNode *Node) {
+func (curr *Node) deleteNode(value int) (delNode *Node) {
 	if curr == nil {
 		return nil
 	}
 
 	if value < curr.value {
-		curr.leftChild = curr.leftChild.deleteNodeFaster(value)
+		curr.leftChild = curr.leftChild.deleteNode(value)
 	} else if value > curr.value {
-		curr.rightChild = curr.rightChild.deleteNodeFaster(value)
+		curr.rightChild = curr.rightChild.deleteNode(value)
 	} else {
 		if curr.leftChild == nil {
 			return curr.rightChild
@@ -218,7 +77,7 @@ func (curr *Node) deleteNodeFaster(value int) (delNode *Node) {
 
 		tempNode := curr.rightChild.getMinNode()
 		curr.value = tempNode.value
-		curr.rightChild.deleteNodeFaster(tempNode.value)
+		curr.rightChild.deleteNode(tempNode.value)
 	}
 
 	return curr
@@ -232,7 +91,7 @@ func (curr *Node) getMinNode() *Node {
 	return minNode
 }
 
-func (bst *BinarySearchTree) deleteFaster(value int) {
+func (bst *BinarySearchTree) delete(value int) {
 	if bst.root == nil {
 		fmt.Println("Cannot delete from an empty BST!!")
 		return
@@ -246,7 +105,7 @@ func (bst *BinarySearchTree) deleteFaster(value int) {
 		}
 	}
 
-	_ = bst.root.deleteNodeFaster(value)
+	_ = bst.root.deleteNode(value)
 }
 
 // inOrder: Node reciver for inOrder traversal.

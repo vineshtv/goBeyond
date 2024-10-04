@@ -28,7 +28,7 @@ func Test100RandomActions(t *testing.T) {
 		if rand_choice == 0 {
 			bst.insert(rand.IntN(1000))
 		} else {
-			bst.deleteFaster(rand.IntN(1000))
+			bst.delete(rand.IntN(1000))
 		}
 	}
 	bst.inOrderTraverse()
